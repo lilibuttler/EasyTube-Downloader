@@ -1,81 +1,28 @@
 const express = require("express");
 const path = require("path");
 const http = require("http");
-const WebSocket = require("ws");
 
-const { checkComponents } = require("./src/componentChecker");
-const { startDownload } = require("./src/downloadManager");
+const Paths = require("./src/constants/Paths");
+const Logger = require("./src/system/Logger");
+const SocketServer = require("./src/websocket/SocketServer");
+const { handleDownloadRequest } = require("./src/download/DownloadService");
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(Paths.PUBLIC));
 
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
-
-const status = checkComponents();
-
-if (!status.ok) {
-
-    console.log("");
-    console.log("========================================");
-    console.log("Componentes ausentes");
-    console.log("========================================");
-
-    status.missing.forEach(item => {
-
-        console.log(item.component);
-        console.log(item.path);
-        console.log("");
-
-    });
-
-} else {
-
-    console.log("");
-    console.log("========================================");
-    console.log("Todos os componentes encontrados");
-    console.log("========================================");
-    console.log("");
-
-}
-
-wss.on("connection", (ws) => {
-
-    console.log("Cliente conectado");
-
-    ws.on("message", (message) => {
-
-        try {
-
-            const { url } = JSON.parse(message);
-
-            startDownload(url, ws);
-
-        } catch {
-
-            ws.send(JSON.stringify({
-
-                type: "error",
-
-                message: "Link inválido."
-
-            }));
-
-        }
-
-    });
-
+app.get("/", (req, res) => {
+    res.sendFile(path.join(Paths.PUBLIC, "index.html"));
 });
 
+const server = http.createServer(app);
+
+const socketServer = new SocketServer(server, handleDownloadRequest);
+socketServer.start();
+
 server.listen(PORT, () => {
-
-    console.log("========================================");
-    console.log("YouTube Downloader");
-    console.log("========================================");
-    console.log(`Servidor iniciado em http://localhost:${PORT}`);
-    console.log("");
-
+    Logger.info("EasyTube Downloader iniciado");
+    Logger.info(`Acesse: http://localhost:${PORT}`);
 });
