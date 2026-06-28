@@ -2,10 +2,23 @@ const WebSocket = require("ws");
 const Events = require("../constants/Events");
 const Logger = require("../system/Logger");
 
+const DownloadAction = require("../actions/DownloadAction");
+const MetadataAction = require("../actions/MetadataAction");
+const FolderAction = require("../actions/FolderAction");
+const SettingsAction = require("../actions/SettingsAction");
+const HistoryAction = require("../actions/HistoryAction");
+
 class SocketServer {
-    constructor(server, handlers = {}) {
+    constructor(server) {
         this.wss = new WebSocket.Server({ server });
-        this.handlers = handlers;
+
+        this.actions = {
+            download: DownloadAction.handle,
+            metadata: MetadataAction.handle,
+            "open-folder": FolderAction.handle,
+            settings: SettingsAction.handle,
+            history: HistoryAction.handle
+        };
     }
 
     start() {
@@ -19,17 +32,12 @@ class SocketServer {
                     const data = JSON.parse(message);
                     const action = data.action || "download";
 
-                    if (action === "metadata") {
-                        await this.handlers.metadata(data, socket);
+                    if (!this.actions[action]) {
+                        socket.error("Ação não reconhecida.");
                         return;
                     }
 
-                    if (action === "download") {
-                        await this.handlers.download(data, socket);
-                        return;
-                    }
-
-                    socket.error("Ação não reconhecida.");
+                    await this.actions[action](data, socket);
                 } catch (error) {
                     Logger.error(error.message);
                     socket.error("Erro ao processar solicitação.");
@@ -60,6 +68,24 @@ class SocketServer {
             metadata: (video) => {
                 this.send(ws, Events.METADATA_LOADED, {
                     video
+                });
+            },
+
+            folderOpened: (folder) => {
+                this.send(ws, Events.FOLDER_OPENED, {
+                    folder
+                });
+            },
+
+            settingsLoaded: (settings) => {
+                this.send(ws, Events.SETTINGS_LOADED, {
+                    settings
+                });
+            },
+
+            historyLoaded: (history) => {
+                this.send(ws, Events.HISTORY_LOADED, {
+                    history
                 });
             },
 
