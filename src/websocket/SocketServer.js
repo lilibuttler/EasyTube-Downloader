@@ -17,7 +17,8 @@ class SocketServer {
                     const data = JSON.parse(message);
                     await this.downloadHandler(data, this.createSocket(ws));
                 } catch (error) {
-                    this.createSocket(ws).error("Erro ao processar solicitação.");
+    		    Logger.error(error.message);
+    		    this.createSocket(ws).error("Erro ao processar solicitação.");
                 }
             });
         });
