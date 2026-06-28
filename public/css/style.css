@@ -198,3 +198,49 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+.input-group {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+}
+
+.input-group input {
+  margin: 0;
+}
+
+.secondary-button,
+.ghost-button {
+  width: auto;
+  margin-top: 0;
+  padding: 0 18px;
+}
+
+.secondary-button {
+  background: #0f172a;
+}
+
+.secondary-button:hover {
+  background: #1e293b;
+}
+
+.ghost-button {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.ghost-button:hover {
+  background: #cbd5e1;
+}
+
+@media (max-width: 640px) {
+  .input-group {
+    grid-template-columns: 1fr;
+  }
+
+  .secondary-button,
+  .ghost-button {
+    width: 100%;
+    padding: 14px;
+  }
+}

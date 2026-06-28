@@ -23,12 +23,17 @@
       <section class="input-area">
         <label for="videoUrl">Link do vídeo</label>
 
-        <input
-          id="videoUrl"
-          type="text"
-          placeholder="Cole aqui o link do YouTube"
-          autocomplete="off"
-        />
+        <div class="input-group">
+          <input
+            id="videoUrl"
+            type="text"
+            placeholder="Cole aqui o link do YouTube"
+            autocomplete="off"
+          />
+
+          <button id="pasteBtn" class="secondary-button" type="button">Colar</button>
+          <button id="clearBtn" class="ghost-button" type="button">Limpar</button>
+        </div>
 
         <button id="downloadBtn">Baixar vídeo</button>
       </section>

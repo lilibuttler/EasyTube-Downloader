@@ -1,5 +1,7 @@
 const input = document.getElementById("videoUrl");
 const button = document.getElementById("downloadBtn");
+const pasteBtn = document.getElementById("pasteBtn");
+const clearBtn = document.getElementById("clearBtn");
 
 const progressArea = document.getElementById("progressArea");
 const progressFill = document.getElementById("progressFill");
@@ -15,6 +17,23 @@ if (!progressDetails) {
     progressDetails.id = "progressDetails";
     progressArea.appendChild(progressDetails);
 }
+
+pasteBtn.addEventListener("click", async () => {
+    try {
+        const text = await navigator.clipboard.readText();
+        input.value = text.trim();
+        input.focus();
+    } catch {
+        showError("Não foi possível acessar a área de transferência.");
+    }
+});
+
+clearBtn.addEventListener("click", () => {
+    input.value = "";
+    input.focus();
+    result.classList.add("hidden");
+    result.innerHTML = "";
+});
 
 button.addEventListener("click", () => {
     const url = input.value.trim();
