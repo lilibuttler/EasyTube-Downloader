@@ -10,11 +10,18 @@
   <main class="app">
     <section class="card">
       <header class="header">
-        <div class="logo">⬇</div>
-        <div>
-          <h1>EasyTube Downloader</h1>
-          <p>Baixe vídeos do YouTube em MP4 de forma simples.</p>
+        <div class="brand">
+          <div class="logo">⬇</div>
+
+          <div>
+            <h1>EasyTube Downloader</h1>
+            <p>Baixe vídeos do YouTube em MP4 de forma simples.</p>
+          </div>
         </div>
+
+        <button id="settingsBtn" class="settings-button" type="button" title="Configurações">
+        ⚙
+        </button>
       </header>
 
       <section class="input-area">
@@ -68,6 +75,49 @@
 
       <section id="result" class="hidden"></section>
     </section>
+
+    <div id="settingsOverlay" class="settings-overlay hidden"></div>
+
+<aside id="settingsPanel" class="settings-panel">
+  <div class="settings-header">
+    <h2>Configurações</h2>
+    <button id="closeSettingsBtn" class="close-settings" type="button">×</button>
+  </div>
+
+  <div class="settings-content">
+    <div class="settings-group">
+      <label>Pasta de download</label>
+      <input type="text" value="Vídeos" disabled />
+      <button class="secondary-button" type="button">Escolher pasta</button>
+    </div>
+
+    <div class="settings-group">
+      <label>Qualidade</label>
+      <select>
+        <option>Melhor disponível</option>
+        <option>1080p</option>
+        <option>720p</option>
+        <option>480p</option>
+      </select>
+    </div>
+
+    <div class="settings-group">
+      <label>Formato</label>
+      <select>
+        <option>MP4</option>
+        <option>MP3</option>
+      </select>
+    </div>
+
+    <label class="checkbox-option">
+      <input type="checkbox" />
+      Abrir pasta automaticamente ao concluir
+    </label>
+
+    <button class="save-settings" type="button">Salvar configurações</button>
+  </div>
+</aside>
+
   </main>
 
   <script src="js/app.js"></script>

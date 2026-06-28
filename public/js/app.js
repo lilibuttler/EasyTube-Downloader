@@ -20,6 +20,11 @@ const videoTitle = document.getElementById("videoTitle");
 const videoChannel = document.getElementById("videoChannel");
 const videoDuration = document.getElementById("videoDuration");
 
+const settingsBtn = document.getElementById("settingsBtn");
+const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+const settingsPanel = document.getElementById("settingsPanel");
+const settingsOverlay = document.getElementById("settingsOverlay");
+
 let currentUrl = "";
 let hasMetadata = false;
 let downloadSocket = null;
@@ -62,6 +67,18 @@ input.addEventListener("paste", () => {
 });
 
 input.addEventListener("change", loadMetadata);
+
+if (settingsBtn) {
+    settingsBtn.addEventListener("click", openSettingsPanel);
+}
+
+if (closeSettingsBtn) {
+    closeSettingsBtn.addEventListener("click", closeSettingsPanel);
+}
+
+if (settingsOverlay) {
+    settingsOverlay.addEventListener("click", closeSettingsPanel);
+}
 
 button.addEventListener("click", () => {
     const url = input.value.trim();
@@ -374,4 +391,14 @@ function cancelDownload() {
     downloadSocket.send(JSON.stringify({
         action: "cancel-download"
     }));
+}
+
+function openSettingsPanel() {
+    settingsPanel.classList.add("open");
+    settingsOverlay.classList.remove("hidden");
+}
+
+function closeSettingsPanel() {
+    settingsPanel.classList.remove("open");
+    settingsOverlay.classList.add("hidden");
 }

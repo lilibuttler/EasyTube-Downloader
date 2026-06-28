@@ -54,3 +54,16 @@ feat(us-008): adiciona botão abrir pasta
 
 Próxima US:
 US-009 – Cancelar Download
+
+
+US-010
+
+1. Refinamento
+2. UX
+3. Arquitetura
+4. Implementação
+5. Testes
+6. Documentação
+7. Commit
+8. Push
+9. Encerramento

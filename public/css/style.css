@@ -384,3 +384,124 @@ button:disabled {
 .danger-button:hover {
     background: #b91c1c;
 }
+
+.brand {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.header {
+  justify-content: space-between;
+}
+
+.settings-button {
+  width: 48px;
+  height: 48px;
+  margin-top: 0;
+  border-radius: 50%;
+  background: #0f172a;
+  font-size: 20px;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.settings-button:hover {
+  background: #1e293b;
+  transform: rotate(90deg);
+}
+
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  z-index: 10;
+}
+
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  max-width: 90vw;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 11;
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.35);
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  padding: 28px;
+}
+
+.settings-panel.open {
+  transform: translateX(0);
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.settings-header h2 {
+  margin: 0;
+  color: #111827;
+}
+
+.close-settings {
+  width: 42px;
+  height: 42px;
+  margin-top: 0;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.close-settings:hover {
+  background: #cbd5e1;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.settings-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #334155;
+}
+
+.settings-group input,
+.settings-group select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.settings-group button {
+  margin-top: 10px;
+}
+
+.checkbox-option {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #334155;
+  font-weight: bold;
+}
+
+.checkbox-option input {
+  width: auto;
+  margin: 0;
+}
+
+.save-settings {
+  margin-top: 8px;
+}
