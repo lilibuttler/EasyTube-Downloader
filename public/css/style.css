@@ -1,47 +1,99 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f3f6fb;
-  margin: 0;
-  padding: 0;
+* {
+  box-sizing: border-box;
 }
 
-.container {
-  max-width: 650px;
-  margin: 80px auto;
-  background: white;
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #0f172a;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.card {
+  width: 100%;
+  max-width: 720px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 36px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+
+.header {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.logo {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: #ef4444;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
 }
 
 h1 {
-  margin-top: 0;
-  color: #1f2937;
+  margin: 0;
+  font-size: 30px;
+  color: #111827;
 }
 
 p {
-  color: #4b5563;
+  margin: 6px 0 0;
+  color: #64748b;
+}
+
+.input-area label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #334155;
 }
 
 input {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   font-size: 16px;
-  margin: 12px 0;
   border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  box-sizing: border-box;
+  border-radius: 12px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
 button {
   width: 100%;
-  padding: 14px;
+  margin-top: 16px;
+  padding: 16px;
   font-size: 16px;
+  font-weight: bold;
   background: #2563eb;
-  color: white;
+  color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
+}
+
+button:hover {
+  background: #1d4ed8;
 }
 
 button:disabled {
@@ -53,22 +105,25 @@ button:disabled {
   display: none;
 }
 
-#progressArea {
-  margin-top: 24px;
+.progress-section {
+  margin-top: 28px;
+  padding: 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
 }
 
 .progress-info {
   display: flex;
   justify-content: space-between;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #1f2937;
+  margin-bottom: 10px;
+  color: #1e293b;
 }
 
 .progress-bar {
   width: 100%;
   height: 18px;
-  background: #e5e7eb;
+  background: #e2e8f0;
   border-radius: 999px;
   overflow: hidden;
 }
@@ -76,63 +131,67 @@ button:disabled {
 #progressFill {
   height: 100%;
   width: 0%;
-  background: #2563eb;
+  background: linear-gradient(90deg, #2563eb, #38bdf8);
   transition: width 0.3s ease;
 }
 
 #progressDetails {
-  margin-top: 14px;
+  margin-top: 16px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 #progressDetails span {
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 13px;
-  color: #475569;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
   text-align: center;
+  font-size: 13px;
+  color: #64748b;
 }
 
 #progressDetails strong {
   display: block;
   margin-top: 4px;
-  color: #1f2937;
-  font-size: 14px;
+  color: #111827;
+  font-size: 15px;
 }
 
 #result {
   margin-top: 24px;
-  padding: 16px;
+  padding: 18px;
   background: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
-  border-radius: 8px;
-  font-weight: bold;
+  border: 1px solid #86efac;
+  border-radius: 16px;
+  color: #166534;
 }
 
 #result h2 {
-  margin-top: 0;
-  margin-bottom: 8px;
+  margin: 0 0 8px;
 }
 
 #result p {
-  margin-bottom: 0;
-  color: #065f46;
+  margin: 0;
+  color: #166534;
 }
 
-#result a {
-  color: #065f46;
-  text-decoration: underline;
-}
+@media (max-width: 640px) {
+  .app {
+    padding: 18px;
+  }
 
-@media (max-width: 600px) {
-  .container {
-    margin: 24px;
+  .card {
     padding: 24px;
+  }
+
+  .header {
+    align-items: flex-start;
+  }
+
+  h1 {
+    font-size: 24px;
   }
 
   #progressDetails {
