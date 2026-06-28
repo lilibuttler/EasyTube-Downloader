@@ -33,7 +33,7 @@ Responsável por tratar as ações recebidas pelo WebSocket.
 
 * DownloadAction
 * MetadataAction
-* FolderAction
+* FolderAction - Responsável por abrir a pasta configurada de downloads utilizando os recursos do sistema operacional.
 * SettingsAction
 * HistoryAction
 
@@ -77,7 +77,7 @@ Constantes compartilhadas.
 Integração com o sistema operacional.
 
 * Logger
-* Explorer
+* Explorer - Responsável pela integração com o Windows Explorer para abertura da pasta de downloads.
 
 ---
 

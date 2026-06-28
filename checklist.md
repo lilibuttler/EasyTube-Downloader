@@ -32,3 +32,25 @@ Commit
 Push
 
 Encerramento
+
+US-008 – Botão Abrir Pasta
+
+Status:
+🟢 Concluída
+
+Arquivos alterados:
+✔ DownloadEngine.js
+✔ app.js
+✔ style.css
+
+Documentação:
+✔ README
+✔ CHANGELOG
+✔ ROADMAP
+✔ ARCHITECTURE
+
+Commit:
+feat(us-008): adiciona botão abrir pasta
+
+Próxima US:
+US-009 – Cancelar Download

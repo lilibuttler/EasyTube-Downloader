@@ -44,3 +44,12 @@ Todas as alterações relevantes deste projeto serão registradas neste document
 * Correção da detecção da pasta do usuário
 * Correção da exibição do preview
 * Correção do carregamento dos metadados
+
+### Added
+
+- Botão "Abrir pasta" após a conclusão do download.
+
+### Changed
+
+- Removida a abertura automática do Windows Explorer ao finalizar o download.
+- O usuário passa a controlar quando abrir a pasta de destino.

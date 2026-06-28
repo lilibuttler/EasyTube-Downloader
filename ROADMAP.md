@@ -18,7 +18,7 @@
 
 ## Versão 1.1
 
-* [ ] Botão Abrir pasta
+* [x] Botão Abrir pasta
 * [ ] Cancelar download
 * [ ] Painel de Configurações
 * [ ] Histórico de downloads
