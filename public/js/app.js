@@ -2,6 +2,7 @@ const input = document.getElementById("videoUrl");
 const button = document.getElementById("downloadBtn");
 const pasteBtn = document.getElementById("pasteBtn");
 const clearBtn = document.getElementById("clearBtn");
+const cancelBtn = document.getElementById("cancelBtn");
 
 const loadingMetadata = document.getElementById("loadingMetadata");
 
@@ -21,6 +22,7 @@ const videoDuration = document.getElementById("videoDuration");
 
 let currentUrl = "";
 let hasMetadata = false;
+let downloadSocket = null;
 
 resetInitialState();
 
@@ -43,6 +45,8 @@ clearBtn.addEventListener("click", () => {
     input.focus();
 });
 
+cancelBtn.addEventListener("click", cancelDownload);
+
 input.addEventListener("input", () => {
     const url = input.value.trim();
 
@@ -50,7 +54,6 @@ input.addEventListener("input", () => {
         currentUrl = "";
         hasMetadata = false;
         resetInitialState();
-        return;
     }
 });
 
@@ -75,16 +78,16 @@ button.addEventListener("click", () => {
 
     resetDownloadScreen();
 
-    const socket = new WebSocket(`ws://${window.location.host}`);
+    downloadSocket = new WebSocket(`ws://${window.location.host}`);
 
-    socket.onopen = () => {
-        socket.send(JSON.stringify({
+    downloadSocket.onopen = () => {
+        downloadSocket.send(JSON.stringify({
             action: "download",
             url
         }));
     };
 
-    socket.onmessage = (event) => {
+    downloadSocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
 
         if (data.type === "download.started") {
@@ -98,30 +101,31 @@ button.addEventListener("click", () => {
 
         if (data.type === "download.completed") {
             hideMetadataLoading();
-            showDownloadCompleted(socket);
+            showDownloadCompleted();
+        }
+
+        if (data.type === "download.cancelled") {
+            handleDownloadCancelled();
         }
 
         if (data.type === "download.error") {
             hideMetadataLoading();
             showError(data.message || "Não foi possível baixar este vídeo.");
-            finishDownload(socket);
+            finishDownload();
         }
     };
 
-    socket.onerror = () => {
+    downloadSocket.onerror = () => {
         hideMetadataLoading();
         showError("Erro ao conectar com o aplicativo.");
-        button.disabled = false;
-        button.innerText = "Baixar vídeo";
+        finishDownload();
     };
 });
 
 function loadMetadata() {
     const url = input.value.trim();
 
-    if (!url || url === currentUrl) {
-        return;
-    }
+    if (!url || url === currentUrl) return;
 
     currentUrl = url;
     hasMetadata = false;
@@ -179,6 +183,7 @@ function showMetadataLoading() {
     loadingMetadata.classList.remove("hidden");
     videoPreview.classList.add("hidden");
     progressArea.classList.add("hidden");
+    cancelBtn.classList.add("hidden");
 
     result.classList.add("hidden");
     result.innerHTML = "";
@@ -217,6 +222,7 @@ function resetInitialState() {
 
     videoPreview.classList.add("hidden");
     progressArea.classList.add("hidden");
+    cancelBtn.classList.add("hidden");
 
     result.classList.add("hidden");
     result.innerHTML = "";
@@ -237,6 +243,7 @@ function resetDownloadScreen() {
     result.innerHTML = "";
 
     progressArea.classList.remove("hidden");
+    cancelBtn.classList.remove("hidden");
 
     progressFill.style.width = "0%";
     percentText.innerText = "0%";
@@ -261,10 +268,11 @@ function updateProgress(data) {
     `;
 }
 
-function showDownloadCompleted(socket) {
+function showDownloadCompleted() {
     progressFill.style.width = "100%";
     percentText.innerText = "100%";
     statusText.innerText = "Download concluído.";
+    cancelBtn.classList.add("hidden");
 
     progressDetails.innerHTML = `
         <span>Status: <strong>Finalizado</strong></span>
@@ -282,14 +290,35 @@ function showDownloadCompleted(socket) {
         </div>
     `;
 
-    const openFolderBtn = document.getElementById("openFolderBtn");
+    document
+        .getElementById("openFolderBtn")
+        .addEventListener("click", openDownloadFolder);
 
-    openFolderBtn.addEventListener("click", openDownloadFolder);
+    finishDownload();
+}
 
-    finishDownload(socket);
+function handleDownloadCancelled() {
+    cancelBtn.classList.add("hidden");
+
+    progressFill.style.width = "0%";
+    percentText.innerText = "0%";
+    statusText.innerText = "Download cancelado.";
+    progressDetails.innerHTML = "";
+
+    result.classList.remove("hidden");
+    result.innerHTML = `
+        <div class="success-card">
+            <h2>Download cancelado</h2>
+            <p>O download foi interrompido pelo usuário.</p>
+        </div>
+    `;
+
+    finishDownload();
 }
 
 function showError(message) {
+    cancelBtn.classList.add("hidden");
+
     result.classList.remove("hidden");
     result.innerHTML = `<strong>${message}</strong>`;
 
@@ -297,13 +326,16 @@ function showError(message) {
     button.innerText = "Baixar vídeo";
 }
 
-function finishDownload(socket) {
+function finishDownload() {
     button.disabled = false;
     button.innerText = "Baixar vídeo";
+    cancelBtn.classList.add("hidden");
 
-    if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.close();
+    if (downloadSocket && downloadSocket.readyState === WebSocket.OPEN) {
+        downloadSocket.close();
     }
+
+    downloadSocket = null;
 }
 
 function openDownloadFolder() {
@@ -331,4 +363,15 @@ function openDownloadFolder() {
     socket.onerror = () => {
         showError("Erro ao abrir a pasta.");
     };
+}
+
+function cancelDownload() {
+    if (!downloadSocket || downloadSocket.readyState !== WebSocket.OPEN) {
+        showError("Nenhum download em andamento para cancelar.");
+        return;
+    }
+
+    downloadSocket.send(JSON.stringify({
+        action: "cancel-download"
+    }));
 }

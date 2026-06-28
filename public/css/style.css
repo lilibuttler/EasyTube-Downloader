@@ -374,3 +374,13 @@ button:disabled {
 .folder-button:hover {
   background: #1e293b;
 }
+
+.danger-button {
+    width: 100%;
+    margin-top: 12px;
+    background: #dc2626;
+}
+
+.danger-button:hover {
+    background: #b91c1c;
+}

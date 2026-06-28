@@ -53,3 +53,11 @@ Todas as alterações relevantes deste projeto serão registradas neste document
 
 - Removida a abertura automática do Windows Explorer ao finalizar o download.
 - O usuário passa a controlar quando abrir a pasta de destino.
+
+### Added
+
+- Botão para cancelar downloads em andamento.
+
+### Changed
+
+- Download pode ser interrompido pelo usuário durante a execução.

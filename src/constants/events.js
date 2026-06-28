@@ -3,6 +3,7 @@ const Events = {
     DOWNLOAD_PROGRESS: "download.progress",
     DOWNLOAD_COMPLETED: "download.completed",
     DOWNLOAD_ERROR: "download.error",
+    DOWNLOAD_CANCELLED: "download.cancelled",
 
     METADATA_LOADED: "metadata.loaded",
 

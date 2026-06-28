@@ -36,6 +36,7 @@ Responsável por tratar as ações recebidas pelo WebSocket.
 * FolderAction - Responsável por abrir a pasta configurada de downloads utilizando os recursos do sistema operacional.
 * SettingsAction
 * HistoryAction
+* CancelDownloadAction - Responsável por interromper o download em execução.
 
 ---
 
@@ -54,6 +55,7 @@ Responsável pelo processo de download.
 * DownloadEngine
 * DownloadService
 * MetadataService
+* DownloadManager - Gerencia os downloads ativos da aplicação.
 
 ---
 

@@ -27,7 +27,8 @@ O projeto foi desenvolvido com arquitetura modular para facilitar manutenção, 
 * Configuração automática da pasta padrão
 * Arquitetura modular baseada em responsabilidades
 * Comunicação em tempo real via WebSocket
-* Botão para abrir a pasta de download
+* Botão para abrir a pasta de download após a conclusão
+* Cancelamento de downloads em andamento
 
 ---
 

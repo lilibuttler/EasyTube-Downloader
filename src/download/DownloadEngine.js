@@ -7,6 +7,8 @@ const Logger = require("../system/Logger");
 const { parseProgress } = require("./ProgressParser");
 const { getDownloadFolder } = require("../config/ConfigService");
 
+const DownloadManager = require("./DownloadManager");
+
 function startDownload(download, socket) {
     const downloadFolder = getDownloadFolder();
 
@@ -52,6 +54,8 @@ function startDownload(download, socket) {
         }
     });
 
+    DownloadManager.register(download.id, yt);
+
     yt.stdout.on("data", (data) => {
         const text = data.toString();
         Logger.info(text);
@@ -69,26 +73,37 @@ function startDownload(download, socket) {
     });
 
     yt.on("close", async (code) => {
-        if (code !== 0) {
-            download.fail();
-            Logger.error(`Download finalizado com erro. Código: ${code}`);
-            socket.error("Não foi possível baixar este vídeo.");
-            return;
-        }
+    if (DownloadManager.isCancelled(download.id)) {
+        DownloadManager.unregister(download.id);
 
-        try {
-            await mergeIfNeeded(downloadFolder, beforeFiles);
+        download.fail();
+        Logger.info("Download cancelado pelo usuário.");
 
-            download.complete();
-            Logger.info("Download concluído.");
+        return;
+    }
 
-            socket.completed(downloadFolder);
-        } catch (error) {
-            download.fail();
-            Logger.error(error.message);
-            socket.error("O vídeo foi baixado, mas não foi possível finalizar o MP4.");
-        }
-    });
+    DownloadManager.unregister(download.id);
+
+    if (code !== 0) {
+        download.fail();
+        Logger.error(`Download finalizado com erro. Código: ${code}`);
+        socket.error("Não foi possível baixar este vídeo.");
+        return;
+    }
+
+    try {
+        await mergeIfNeeded(downloadFolder, beforeFiles);
+
+        download.complete();
+        Logger.info("Download concluído.");
+
+        socket.completed(downloadFolder);
+    } catch (error) {
+        download.fail();
+        Logger.error(error.message);
+        socket.error("O vídeo foi baixado, mas não foi possível finalizar o MP4.");
+    }
+});
 
     yt.on("error", (err) => {
         download.fail();

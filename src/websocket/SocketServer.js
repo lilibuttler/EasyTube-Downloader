@@ -7,6 +7,7 @@ const MetadataAction = require("../actions/MetadataAction");
 const FolderAction = require("../actions/FolderAction");
 const SettingsAction = require("../actions/SettingsAction");
 const HistoryAction = require("../actions/HistoryAction");
+const CancelDownloadAction = require("../actions/CancelDownloadAction");
 
 class SocketServer {
     constructor(server) {
@@ -14,6 +15,7 @@ class SocketServer {
 
         this.actions = {
             download: DownloadAction.handle,
+            "cancel-download": CancelDownloadAction.handle,
             metadata: MetadataAction.handle,
             "open-folder": FolderAction.handle,
             settings: SettingsAction.handle,
@@ -92,6 +94,12 @@ class SocketServer {
             error: (message) => {
                 this.send(ws, Events.DOWNLOAD_ERROR, {
                     message
+                });
+            },
+
+            cancelled: () => {
+                this.send(ws, Events.DOWNLOAD_CANCELLED, {
+                    message: "Download cancelado."
                 });
             }
         };
