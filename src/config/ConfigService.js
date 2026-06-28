@@ -4,7 +4,7 @@ const path = require("path");
 const Paths = require("../constants/Paths");
 
 const DEFAULT_CONFIG = {
-    downloadFolder: Paths.DOWNLOADS,
+    downloadFolder: "videos",
     format: "mp4",
     quality: "best"
 };
@@ -34,11 +34,31 @@ function getConfig() {
 
 function getDownloadFolder() {
     const config = getConfig();
+    return resolveDownloadFolder(config.downloadFolder);
+}
 
-    return config.downloadFolder || DEFAULT_CONFIG.downloadFolder;
+function resolveDownloadFolder(downloadFolder) {
+    if (!downloadFolder) {
+        return Paths.DEFAULT_DOWNLOAD_FOLDER;
+    }
+
+    if (downloadFolder === "videos") {
+        return Paths.VIDEOS;
+    }
+
+    if (downloadFolder === "desktop") {
+        return Paths.DESKTOP;
+    }
+
+    if (downloadFolder === "downloads") {
+        return Paths.DOWNLOADS;
+    }
+
+    return downloadFolder;
 }
 
 module.exports = {
     getConfig,
-    getDownloadFolder
+    getDownloadFolder,
+    resolveDownloadFolder
 };
