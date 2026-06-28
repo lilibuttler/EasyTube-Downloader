@@ -1,11 +1,18 @@
 const Download = require("../models/Download");
 const { startDownload } = require("./DownloadEngine");
+const Errors = require("../constants/Errors");
 
 function handleDownloadRequest(data, socket) {
-    const url = data.url;
 
-    if (!url || !isValidYoutubeUrl(url)) {
-        socket.error("Cole um link válido do YouTube.");
+    const url = (data.url || "").trim();
+
+    if (!url) {
+        socket.error(Errors.INVALID_URL.userMessage);
+        return;
+    }
+
+    if (!isValidYoutubeUrl(url)) {
+        socket.error(Errors.INVALID_URL.userMessage);
         return;
     }
 
@@ -15,15 +22,22 @@ function handleDownloadRequest(data, socket) {
         quality: "best"
     });
 
-    startDownload(download, socket);
+    try {
+        startDownload(download, socket);
+    } catch (error) {
+        console.error(error);
+        socket.error(Errors.UNEXPECTED_ERROR.userMessage);
+    }
 }
 
 function isValidYoutubeUrl(url) {
+
     return (
-        url.includes("youtube.com/watch") ||
-        url.includes("youtube.com/shorts") ||
-        url.includes("youtu.be/")
+        /^https?:\/\/(www\.)?youtube\.com\/watch\?/.test(url) ||
+        /^https?:\/\/(www\.)?youtube\.com\/shorts\//.test(url) ||
+        /^https?:\/\/youtu\.be\//.test(url)
     );
+
 }
 
 module.exports = {
