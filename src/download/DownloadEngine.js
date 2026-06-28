@@ -1,4 +1,4 @@
-const { spawn, execFile, exec } = require("child_process");
+const { spawn } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -82,7 +82,6 @@ function startDownload(download, socket) {
             download.complete();
             Logger.info("Download concluído.");
 
-            exec(`explorer "${downloadFolder}"`);
             socket.completed(downloadFolder);
         } catch (error) {
             download.fail();

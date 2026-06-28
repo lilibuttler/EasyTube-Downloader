@@ -272,9 +272,19 @@ function showDownloadCompleted(socket) {
 
     result.classList.remove("hidden");
     result.innerHTML = `
-        <h2>Download concluído!</h2>
-        <p>O vídeo foi salvo na pasta <strong>Vídeos</strong>.</p>
+        <div class="success-card">
+            <h2>Download concluído!</h2>
+            <p>Seu vídeo foi salvo com sucesso.</p>
+
+            <button id="openFolderBtn" class="folder-button" type="button">
+                📂 Abrir pasta
+            </button>
+        </div>
     `;
+
+    const openFolderBtn = document.getElementById("openFolderBtn");
+
+    openFolderBtn.addEventListener("click", openDownloadFolder);
 
     finishDownload(socket);
 }
@@ -294,4 +304,31 @@ function finishDownload(socket) {
     if (socket && socket.readyState === WebSocket.OPEN) {
         socket.close();
     }
+}
+
+function openDownloadFolder() {
+    const socket = new WebSocket(`ws://${window.location.host}`);
+
+    socket.onopen = () => {
+        socket.send(JSON.stringify({
+            action: "open-folder"
+        }));
+    };
+
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === "folder.opened") {
+            socket.close();
+        }
+
+        if (data.type === "download.error") {
+            showError(data.message || "Não foi possível abrir a pasta.");
+            socket.close();
+        }
+    };
+
+    socket.onerror = () => {
+        showError("Erro ao abrir a pasta.");
+    };
 }

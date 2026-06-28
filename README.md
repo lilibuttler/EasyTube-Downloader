@@ -1,79 +1,127 @@
-# EasyTube Downloader
+# 🚀 EasyTube Downloader
 
-Aplicativo local para baixar vídeos do YouTube em MP4 de forma simples, usando yt-dlp e FFmpeg.
-
-## Objetivo
-
-Criar um aplicativo fácil de usar, com interface simples, sem necessidade de comandos no terminal para o usuário final.
-
-## Funcionalidades atuais
-
-- Baixar vídeos do YouTube em MP4
-- Barra de progresso
-- Salvamento automático na pasta configurada
-- Abertura automática da pasta ao finalizar
-- Uso local do yt-dlp e FFmpeg
-
-## Tecnologias
-
-- Node.js
-- Express
-- WebSocket
-- HTML
-- CSS
-- JavaScript
-- yt-dlp
-- FFmpeg
-
-## Estrutura do projeto
-
-```text
-EasyTube-Downloader
-├── bin
-├── config
-├── docs
-├── public
-├── src
-├── server.js
-└── package.json
-
-Como executar
-npm install
-npm start
-
-Acesse:
-
-http://localhost:3000
-Componentes necessários
-
-Os arquivos abaixo devem estar na pasta bin:
-
-yt-dlp.exe
-ffmpeg.exe
-ffprobe.exe
-Roadmap
-
-Consulte docs/roadmap.md.
-
+Aplicativo desktop desenvolvido em **Node.js** para download de vídeos do YouTube em MP4 utilizando **yt-dlp** e **FFmpeg**, com interface moderna e foco na simplicidade de uso.
 
 ---
 
-## `CHANGELOG.md`
+# Objetivo
 
-```md
-# Changelog
+Criar um aplicativo rápido, leve e intuitivo para download de vídeos do YouTube, eliminando a necessidade de utilizar comandos em terminal.
 
-Todas as mudanças importantes deste projeto serão documentadas aqui.
+O projeto foi desenvolvido com arquitetura modular para facilitar manutenção, evolução e futuras funcionalidades.
 
-## [1.0.0] - Em desenvolvimento
+---
 
-### Adicionado
+# Funcionalidades
 
-- Download de vídeos em MP4
-- Integração com yt-dlp
-- Integração com FFmpeg
-- Barra de progresso
-- Salvamento automático na pasta configurada
-- Abertura automática da pasta ao finalizar
-- Organização inicial do projeto
-- Versionamento no GitHub
+## Disponíveis
+
+* Download de vídeos em MP4
+* Pré-visualização do vídeo antes do download
+* Miniatura do vídeo
+* Exibição do título, canal e duração
+* Barra de progresso em tempo real
+* Exibição de velocidade, tamanho e tempo restante
+* Integração com yt-dlp
+* Integração com FFmpeg
+* Configuração automática da pasta padrão
+* Arquitetura modular baseada em responsabilidades
+* Comunicação em tempo real via WebSocket
+
+---
+
+# Tecnologias
+
+* Node.js
+* Express
+* WebSocket
+* HTML5
+* CSS3
+* JavaScript
+* yt-dlp
+* FFmpeg
+
+---
+
+# Estrutura do Projeto
+
+```text
+EasyTube Downloader
+│
+├── bin
+│   ├── yt-dlp.exe
+│   ├── ffmpeg.exe
+│   └── ffprobe.exe
+│
+├── config
+│
+├── public
+│   ├── css
+│   ├── js
+│   └── index.html
+│
+├── src
+│   ├── actions
+│   ├── config
+│   ├── constants
+│   ├── download
+│   ├── models
+│   ├── system
+│   └── websocket
+│
+├── ARCHITECTURE.md
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── ROADMAP.md
+├── README.md
+├── package.json
+└── server.js
+```
+
+---
+
+# Como executar
+
+## Instalar dependências
+
+```bash
+npm install
+```
+
+## Executar
+
+```bash
+npm start
+```
+
+Acesse:
+
+```
+http://localhost:3000
+```
+
+---
+
+# Dependências externas
+
+Os seguintes arquivos devem existir na pasta **bin**:
+
+* yt-dlp.exe
+* ffmpeg.exe
+* ffprobe.exe
+
+---
+
+# Documentação
+
+* README.md
+* ROADMAP.md
+* CHANGELOG.md
+* ARCHITECTURE.md
+* CONTRIBUTING.md
+
+---
+
+# Licença
+
+Projeto desenvolvido para fins de estudo e uso pessoal.
