@@ -8,6 +8,14 @@ const statusText = document.getElementById("status");
 
 const result = document.getElementById("result");
 
+let progressDetails = document.getElementById("progressDetails");
+
+if (!progressDetails) {
+    progressDetails = document.createElement("div");
+    progressDetails.id = "progressDetails";
+    progressArea.appendChild(progressDetails);
+}
+
 button.addEventListener("click", () => {
     const url = input.value.trim();
 
@@ -37,6 +45,12 @@ button.addEventListener("click", () => {
             progressFill.style.width = `${percent}%`;
             percentText.innerText = `${percent}%`;
             statusText.innerText = "Baixando vídeo...";
+
+            progressDetails.innerHTML = `
+                <span>Tamanho: <strong>${data.size || "-"}</strong></span>
+                <span>Velocidade: <strong>${data.speed || "-"}</strong></span>
+                <span>Tempo restante: <strong>${data.eta || "-"}</strong></span>
+            `;
         }
 
         if (data.type === "download.completed") {
@@ -44,9 +58,13 @@ button.addEventListener("click", () => {
             percentText.innerText = "100%";
             statusText.innerText = "Download concluído.";
 
+            progressDetails.innerHTML = `
+                <span>Status: <strong>Finalizado</strong></span>
+            `;
+
             result.classList.remove("hidden");
             result.innerHTML = `
-                <h2>✅ Download concluído!</h2>
+                <h2>Download concluído!</h2>
                 <p>O vídeo foi salvo na pasta <strong>YouTube Downloader</strong> na Área de Trabalho.</p>
             `;
 
@@ -75,6 +93,7 @@ function resetScreen() {
     progressFill.style.width = "0%";
     percentText.innerText = "0%";
     statusText.innerText = "Preparando download...";
+    progressDetails.innerHTML = "";
 
     button.disabled = true;
     button.innerText = "Baixando...";
