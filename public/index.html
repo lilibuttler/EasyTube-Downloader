@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>EasyTube Downloader</title>
-
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <main class="app">
     <section class="card">
       <header class="header">
-        <div class="logo">▶</div>
-
+        <div class="logo">⬇</div>
         <div>
           <h1>EasyTube Downloader</h1>
           <p>Baixe vídeos do YouTube em MP4 de forma simples.</p>
@@ -24,19 +21,26 @@
         <label for="videoUrl">Link do vídeo</label>
 
         <div class="input-group">
-          <input
-            id="videoUrl"
-            type="text"
-            placeholder="Cole aqui o link do YouTube"
-            autocomplete="off"
-          />
-
+          <input id="videoUrl" type="text" placeholder="Cole aqui o link do YouTube" autocomplete="off" />
           <button id="pasteBtn" class="secondary-button" type="button">Colar</button>
           <button id="clearBtn" class="ghost-button" type="button">Limpar</button>
         </div>
-
-        <button id="downloadBtn">Baixar vídeo</button>
       </section>
+
+      <section id="videoPreview" class="video-preview hidden">
+        <div class="thumbnail-box">
+          <img id="videoThumbnail" src="" alt="Miniatura do vídeo" />
+        </div>
+
+        <div class="video-info">
+          <span class="badge">VÍDEO</span>
+          <h2 id="videoTitle"></h2>
+          <p id="videoChannel"></p>
+          <p id="videoDuration"></p>
+        </div>
+      </section>
+
+      <button id="downloadBtn" disabled>Baixar vídeo</button>
 
       <section id="progressArea" class="progress-section hidden">
         <div class="progress-info">

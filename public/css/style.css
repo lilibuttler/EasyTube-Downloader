@@ -244,3 +244,60 @@ button:disabled {
     padding: 14px;
   }
 }
+
+.video-preview {
+  margin-top: 28px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  border: 1px solid #334155;
+  border-radius: 18px;
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.thumbnail-box {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #020617;
+}
+
+.thumbnail-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-info h2 {
+  margin: 12px 0;
+  color: #ffffff;
+  font-size: 24px;
+}
+
+.video-info p {
+  color: #cbd5e1;
+  margin: 8px 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 10px;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+#downloadBtn:disabled {
+  background: #475569;
+}
+
+@media (max-width: 720px) {
+  .video-preview {
+    grid-template-columns: 1fr;
+  }
+}

@@ -7,22 +7,24 @@ const progressArea = document.getElementById("progressArea");
 const progressFill = document.getElementById("progressFill");
 const percentText = document.getElementById("percent");
 const statusText = document.getElementById("status");
+const progressDetails = document.getElementById("progressDetails");
 
 const result = document.getElementById("result");
 
-let progressDetails = document.getElementById("progressDetails");
+const videoPreview = document.getElementById("videoPreview");
+const videoThumbnail = document.getElementById("videoThumbnail");
+const videoTitle = document.getElementById("videoTitle");
+const videoChannel = document.getElementById("videoChannel");
+const videoDuration = document.getElementById("videoDuration");
 
-if (!progressDetails) {
-    progressDetails = document.createElement("div");
-    progressDetails.id = "progressDetails";
-    progressArea.appendChild(progressDetails);
-}
+let currentUrl = "";
 
 pasteBtn.addEventListener("click", async () => {
     try {
         const text = await navigator.clipboard.readText();
         input.value = text.trim();
         input.focus();
+        loadMetadata();
     } catch {
         showError("Não foi possível acessar a área de transferência.");
     }
@@ -30,9 +32,18 @@ pasteBtn.addEventListener("click", async () => {
 
 clearBtn.addEventListener("click", () => {
     input.value = "";
-    input.focus();
+    currentUrl = "";
+    button.disabled = true;
+    videoPreview.classList.add("hidden");
     result.classList.add("hidden");
     result.innerHTML = "";
+    input.focus();
+});
+
+input.addEventListener("change", loadMetadata);
+
+input.addEventListener("paste", () => {
+    setTimeout(loadMetadata, 200);
 });
 
 button.addEventListener("click", () => {
@@ -48,7 +59,10 @@ button.addEventListener("click", () => {
     const socket = new WebSocket(`ws://${window.location.host}`);
 
     socket.onopen = () => {
-        socket.send(JSON.stringify({ url }));
+        socket.send(JSON.stringify({
+            action: "download",
+            url
+        }));
     };
 
     socket.onmessage = (event) => {
@@ -84,7 +98,7 @@ button.addEventListener("click", () => {
             result.classList.remove("hidden");
             result.innerHTML = `
                 <h2>Download concluído!</h2>
-                <p>O vídeo foi salvo na pasta <strong>YouTube Downloader</strong> na Área de Trabalho.</p>
+                <p>O vídeo foi salvo na pasta <strong>Vídeos</strong>.</p>
             `;
 
             finishDownload(socket);
@@ -102,6 +116,54 @@ button.addEventListener("click", () => {
         button.innerText = "Baixar vídeo";
     };
 });
+
+function loadMetadata() {
+    const url = input.value.trim();
+
+    if (!url || url === currentUrl) return;
+
+    currentUrl = url;
+    button.disabled = true;
+    videoPreview.classList.add("hidden");
+
+    const socket = new WebSocket(`ws://${window.location.host}`);
+
+    socket.onopen = () => {
+        socket.send(JSON.stringify({
+            action: "metadata",
+            url
+        }));
+    };
+
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === "metadata.loaded") {
+            showVideoPreview(data.video);
+            button.disabled = false;
+            socket.close();
+        }
+
+        if (data.type === "download.error") {
+            showError(data.message || "Não foi possível carregar as informações do vídeo.");
+            socket.close();
+        }
+    };
+
+    socket.onerror = () => {
+        showError("Erro ao carregar informações do vídeo.");
+    };
+}
+
+function showVideoPreview(video) {
+    videoThumbnail.src = video.thumbnail;
+    videoTitle.innerText = video.title || "Título não disponível";
+    videoChannel.innerText = video.channel ? `Canal: ${video.channel}` : "";
+    videoDuration.innerText = video.duration ? `Duração: ${video.duration}` : "";
+
+    videoPreview.classList.remove("hidden");
+    result.classList.add("hidden");
+}
 
 function resetScreen() {
     result.classList.add("hidden");

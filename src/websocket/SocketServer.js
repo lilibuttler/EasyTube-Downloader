@@ -3,9 +3,9 @@ const Events = require("../constants/Events");
 const Logger = require("../system/Logger");
 
 class SocketServer {
-    constructor(server, downloadHandler) {
+    constructor(server, handlers = {}) {
         this.wss = new WebSocket.Server({ server });
-        this.downloadHandler = downloadHandler;
+        this.handlers = handlers;
     }
 
     start() {
@@ -13,12 +13,26 @@ class SocketServer {
             Logger.info("Cliente conectado via WebSocket");
 
             ws.on("message", async (message) => {
+                const socket = this.createSocket(ws);
+
                 try {
                     const data = JSON.parse(message);
-                    await this.downloadHandler(data, this.createSocket(ws));
+                    const action = data.action || "download";
+
+                    if (action === "metadata") {
+                        await this.handlers.metadata(data, socket);
+                        return;
+                    }
+
+                    if (action === "download") {
+                        await this.handlers.download(data, socket);
+                        return;
+                    }
+
+                    socket.error("Ação não reconhecida.");
                 } catch (error) {
-    		    Logger.error(error.message);
-    		    this.createSocket(ws).error("Erro ao processar solicitação.");
+                    Logger.error(error.message);
+                    socket.error("Erro ao processar solicitação.");
                 }
             });
         });
@@ -40,6 +54,12 @@ class SocketServer {
                 this.send(ws, Events.DOWNLOAD_COMPLETED, {
                     message: "Download concluído.",
                     folder
+                });
+            },
+
+            metadata: (video) => {
+                this.send(ws, Events.METADATA_LOADED, {
+                    video
                 });
             },
 

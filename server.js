@@ -6,6 +6,7 @@ const Paths = require("./src/constants/Paths");
 const Logger = require("./src/system/Logger");
 const SocketServer = require("./src/websocket/SocketServer");
 const { handleDownloadRequest } = require("./src/download/DownloadService");
+const { getVideoMetadata } = require("./src/download/MetadataService");
 
 const app = express();
 const PORT = 3000;
@@ -19,7 +20,15 @@ app.get("/", (req, res) => {
 
 const server = http.createServer(app);
 
-const socketServer = new SocketServer(server, handleDownloadRequest);
+const socketServer = new SocketServer(server, {
+    download: handleDownloadRequest,
+
+    metadata: async (data, socket) => {
+        const video = await getVideoMetadata(data.url);
+        socket.metadata(video);
+    }
+});
+
 socketServer.start();
 
 server.listen(PORT, () => {
