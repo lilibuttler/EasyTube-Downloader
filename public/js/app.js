@@ -25,9 +25,14 @@ const closeSettingsBtn = document.getElementById("closeSettingsBtn");
 const settingsPanel = document.getElementById("settingsPanel");
 const settingsOverlay = document.getElementById("settingsOverlay");
 
-let currentUrl = "";
-let hasMetadata = false;
-let downloadSocket = null;
+const downloadFolderInput = document.getElementById("downloadFolder");
+const videoQualityInput = document.getElementById("videoQuality");
+const videoFormatInput = document.getElementById("videoFormat");
+const openFolderAfterDownloadInput = document.getElementById("openFolderAfterDownload");
+
+AppState.currentUrl = "";
+AppState.hasMetadata = false;
+AppState.downloadSocket = null;
 
 resetInitialState();
 
@@ -44,8 +49,8 @@ pasteBtn.addEventListener("click", async () => {
 
 clearBtn.addEventListener("click", () => {
     input.value = "";
-    currentUrl = "";
-    hasMetadata = false;
+    AppState.currentUrl = "";
+    AppState.hasMetadata = false;
     resetInitialState();
     input.focus();
 });
@@ -56,8 +61,8 @@ input.addEventListener("input", () => {
     const url = input.value.trim();
 
     if (!url) {
-        currentUrl = "";
-        hasMetadata = false;
+        AppState.currentUrl = "";
+        AppState.hasMetadata = false;
         resetInitialState();
     }
 });
@@ -68,18 +73,6 @@ input.addEventListener("paste", () => {
 
 input.addEventListener("change", loadMetadata);
 
-if (settingsBtn) {
-    settingsBtn.addEventListener("click", openSettingsPanel);
-}
-
-if (closeSettingsBtn) {
-    closeSettingsBtn.addEventListener("click", closeSettingsPanel);
-}
-
-if (settingsOverlay) {
-    settingsOverlay.addEventListener("click", closeSettingsPanel);
-}
-
 button.addEventListener("click", () => {
     const url = input.value.trim();
 
@@ -88,23 +81,23 @@ button.addEventListener("click", () => {
         return;
     }
 
-    if (!hasMetadata) {
+    if (!AppState.hasMetadata) {
         showError("Aguarde carregar as informações do vídeo antes de baixar.");
         return;
     }
 
     resetDownloadScreen();
 
-    downloadSocket = new WebSocket(`ws://${window.location.host}`);
+    AppState.downloadSocket = new WebSocket(`ws://${window.location.host}`);
 
-    downloadSocket.onopen = () => {
-        downloadSocket.send(JSON.stringify({
-            action: "download",
+    AppState.downloadSocket.onopen = () => {
+        AppState.downloadSocket.send(JSON.stringify({
+            action: Actions.DOWNLOAD_START,
             url
         }));
     };
 
-    downloadSocket.onmessage = (event) => {
+    AppState.downloadSocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
 
         if (data.type === "download.started") {
@@ -132,7 +125,7 @@ button.addEventListener("click", () => {
         }
     };
 
-    downloadSocket.onerror = () => {
+    AppState.downloadSocket.onerror = () => {
         hideMetadataLoading();
         showError("Erro ao conectar com o aplicativo.");
         finishDownload();
@@ -142,10 +135,10 @@ button.addEventListener("click", () => {
 function loadMetadata() {
     const url = input.value.trim();
 
-    if (!url || url === currentUrl) return;
+    if (!url || url === AppState.currentUrl) return;
 
-    currentUrl = url;
-    hasMetadata = false;
+    AppState.currentUrl = url;
+    AppState.hasMetadata = false;
 
     showMetadataLoading();
 
@@ -153,7 +146,7 @@ function loadMetadata() {
 
     socket.onopen = () => {
         socket.send(JSON.stringify({
-            action: "metadata",
+           action: Actions.METADATA_LOAD,
             url
         }));
     };
@@ -165,21 +158,25 @@ function loadMetadata() {
             hideMetadataLoading();
             showVideoPreview(data.video);
 
-            hasMetadata = true;
-            button.disabled = false;
-            button.innerText = "Baixar vídeo";
+            AppState.hasMetadata = true;
+            DOM.downloadBtn.disabled = false;
+            DOM.downloadBtn.innerText = "Baixar vídeo";
 
             socket.close();
         }
 
-        if (data.type === "download.error") {
+        if (data.type === Events.DOWNLOAD_ERROR) {
             hideMetadataLoading();
 
-            hasMetadata = false;
-            button.disabled = true;
-            button.innerText = "Baixar vídeo";
+            AppState.hasMetadata = true;
+            DOM.downloadBtn.disabled = false;
+            DOM.downloadBtn.innerText = "Baixar vídeo";
 
-            showError(data.message || "Não foi possível carregar as informações do vídeo.");
+            DOM.videoPreview.classList.add("hidden");
+
+            showError(
+                "Não foi possível carregar as informações do vídeo. Você ainda pode tentar baixar mesmo assim."
+            );
 
             socket.close();
         }
@@ -188,27 +185,29 @@ function loadMetadata() {
     socket.onerror = () => {
         hideMetadataLoading();
 
-        hasMetadata = false;
-        button.disabled = true;
-        button.innerText = "Baixar vídeo";
+        AppState.hasMetadata = true;
+        DOM.downloadBtn.disabled = false;
+        DOM.downloadBtn.innerText = "Baixar vídeo";
 
-        showError("Erro ao carregar informações do vídeo.");
+        showError(
+            "Erro ao carregar informações do vídeo. Você ainda pode tentar baixar mesmo assim."
+        );
     };
 }
 
 function showMetadataLoading() {
-    loadingMetadata.classList.remove("hidden");
-    videoPreview.classList.add("hidden");
-    progressArea.classList.add("hidden");
-    cancelBtn.classList.add("hidden");
+    DOM.loadingMetadata.classList.remove("hidden");
+    DOM.videoPreview.classList.add("hidden");
+    DOM.progressArea.classList.add("hidden");
+    DOM.cancelBtn.classList.add("hidden");
 
     result.classList.add("hidden");
     result.innerHTML = "";
 
     clearPreview();
 
-    button.disabled = true;
-    button.innerText = "Obtendo informações...";
+    DOM.downloadBtn.disabled = true;
+    DOM.downloadBtn.innerText = "Obtendo informações...";
 }
 
 function hideMetadataLoading() {
@@ -249,8 +248,8 @@ function resetInitialState() {
     statusText.innerText = "Preparando download...";
     progressDetails.innerHTML = "";
 
-    button.disabled = true;
-    button.innerText = "Baixar vídeo";
+    DOM.downloadBtn.disabled = true;
+    DOM.downloadBtn.innerText = "Baixar vídeo";
 }
 
 function resetDownloadScreen() {
@@ -267,8 +266,8 @@ function resetDownloadScreen() {
     statusText.innerText = "Preparando download...";
     progressDetails.innerHTML = "";
 
-    button.disabled = true;
-    button.innerText = "Baixando...";
+    DOM.downloadBtn.disabled = true;
+    DOM.downloadBtn.innerText = "Baixando...";
 }
 
 function updateProgress(data) {
@@ -334,25 +333,27 @@ function handleDownloadCancelled() {
 }
 
 function showError(message) {
-    cancelBtn.classList.add("hidden");
 
-    result.classList.remove("hidden");
-    result.innerHTML = `<strong>${message}</strong>`;
+    DOM.cancelBtn.classList.add("hidden");
 
-    button.disabled = !hasMetadata;
-    button.innerText = "Baixar vídeo";
+    DOM.result.classList.remove("hidden");
+    DOM.result.innerHTML = `<strong>${message}</strong>`;
+
+    DOM.downloadBtn.disabled = !AppState.hasMetadata;
+    DOM.downloadBtn.innerText = "Baixar vídeo";
+
 }
 
 function finishDownload() {
-    button.disabled = false;
-    button.innerText = "Baixar vídeo";
-    cancelBtn.classList.add("hidden");
+    DOM.downloadBtn.disabled = false;
+    DOM.downloadBtn.innerText = "Baixar vídeo";
+    DOM.cancelBtn.classList.add("hidden");
 
-    if (downloadSocket && downloadSocket.readyState === WebSocket.OPEN) {
-        downloadSocket.close();
+    if (AppState.downloadSocket && AppState.downloadSocket.readyState === WebSocket.OPEN) {
+        AppState.downloadSocket.close();
     }
 
-    downloadSocket = null;
+    AppState.downloadSocket = null;
 }
 
 function openDownloadFolder() {
@@ -360,7 +361,7 @@ function openDownloadFolder() {
 
     socket.onopen = () => {
         socket.send(JSON.stringify({
-            action: "open-folder"
+            action: Actions.FOLDER_OPEN
         }));
     };
 
@@ -383,22 +384,14 @@ function openDownloadFolder() {
 }
 
 function cancelDownload() {
-    if (!downloadSocket || downloadSocket.readyState !== WebSocket.OPEN) {
+    if (!AppState.downloadSocket || AppState.downloadSocket.readyState !== WebSocket.OPEN) {
         showError("Nenhum download em andamento para cancelar.");
         return;
     }
 
-    downloadSocket.send(JSON.stringify({
-        action: "cancel-download"
+    AppState.downloadSocket.send(JSON.stringify({
+        action: Actions.DOWNLOAD_CANCEL
     }));
 }
 
-function openSettingsPanel() {
-    settingsPanel.classList.add("open");
-    settingsOverlay.classList.remove("hidden");
-}
-
-function closeSettingsPanel() {
-    settingsPanel.classList.remove("open");
-    settingsOverlay.classList.add("hidden");
-}
+Settings.initialize();

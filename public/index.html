@@ -87,39 +87,63 @@
   <div class="settings-content">
     <div class="settings-group">
       <label>Pasta de download</label>
-      <input type="text" value="Vídeos" disabled />
+      <input
+            id="downloadFolder"
+            type="text"
+            disabled
+      />
       <button class="secondary-button" type="button">Escolher pasta</button>
     </div>
 
     <div class="settings-group">
       <label>Qualidade</label>
-      <select>
-        <option>Melhor disponível</option>
-        <option>1080p</option>
-        <option>720p</option>
-        <option>480p</option>
+      <select id="videoQuality">
+        <option value="best">Melhor disponível</option>
+        <option value="1080">1080p</option>
+        <option value="720">720p</option>
+        <option value="480">480p</option>
       </select>
     </div>
 
     <div class="settings-group">
       <label>Formato</label>
-      <select>
-        <option>MP4</option>
-        <option>MP3</option>
+      <select id="videoFormat">
+        <option value="mp4">MP4</option>
+        <option value="mp3">MP3</option>
       </select>
     </div>
 
     <label class="checkbox-option">
-      <input type="checkbox" />
-      Abrir pasta automaticamente ao concluir
-    </label>
+        <input
+            id="openFolderAfterDownload"
+            type="checkbox"
+        />
 
-    <button class="save-settings" type="button">Salvar configurações</button>
+        Abrir pasta automaticamente ao concluir
+      </label>
+
+    <button
+        id="saveSettingsBtn"
+        class="save-settings"
+        type="button">
+        Salvar configurações
+    </button>
   </div>
 </aside>
 
   </main>
 
+  <script src="js/shared/dom.js"></script>
+  <script src="js/shared/state.js"></script>
+  <script src="js/shared/events.js"></script>
+  <script src="js/shared/actions.js"></script>
+  <script src="js/utils/utils.js"></script>
+  <script src="js/services/websocket.js"></script>
+  <script src="js/ui/ui.js"></script>
+  <script src="js/modules/metadata.js"></script>
+  <script src="js/modules/download.js"></script>
+  <script src="js/modules/settings.js"></script>
   <script src="js/app.js"></script>
+  
 </body>
 </html>

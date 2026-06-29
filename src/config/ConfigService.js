@@ -6,7 +6,8 @@ const Paths = require("../constants/Paths");
 const DEFAULT_CONFIG = {
     downloadFolder: "videos",
     format: "mp4",
-    quality: "best"
+    videoQuality: "best",
+    openFolderAfterDownload: true
 };
 
 const CONFIG_FILE = path.join(Paths.CONFIG, "config.json");
@@ -57,8 +58,28 @@ function resolveDownloadFolder(downloadFolder) {
     return downloadFolder;
 }
 
+function saveConfig(config) {
+    ensureConfigFile();
+
+    const current = getConfig();
+
+    const updated = {
+        ...current,
+        ...config
+    };
+
+    fs.writeFileSync(
+        CONFIG_FILE,
+        JSON.stringify(updated, null, 4),
+        "utf-8"
+    );
+
+    return updated;
+}
+
 module.exports = {
     getConfig,
+    saveConfig,
     getDownloadFolder,
     resolveDownloadFolder
 };

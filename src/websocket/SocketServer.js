@@ -1,5 +1,6 @@
 const WebSocket = require("ws");
 const Events = require("../constants/Events");
+const Actions = require("../constants/Actions");
 const Logger = require("../system/Logger");
 
 const DownloadAction = require("../actions/DownloadAction");
@@ -14,11 +15,13 @@ class SocketServer {
         this.wss = new WebSocket.Server({ server });
 
         this.actions = {
-            download: DownloadAction.handle,
-            "cancel-download": CancelDownloadAction.handle,
-            metadata: MetadataAction.handle,
-            "open-folder": FolderAction.handle,
-            settings: SettingsAction.handle,
+            [Actions.DOWNLOAD_START]: DownloadAction.handle,
+            [Actions.DOWNLOAD_CANCEL]: CancelDownloadAction.handle,
+            [Actions.METADATA_LOAD]: MetadataAction.handle,
+            [Actions.FOLDER_OPEN]: FolderAction.handle,
+            [Actions.SETTINGS_LOAD]: SettingsAction.handle,
+            [Actions.SETTINGS_SAVE]: SettingsAction.handle,
+
             history: HistoryAction.handle
         };
     }
@@ -32,7 +35,7 @@ class SocketServer {
 
                 try {
                     const data = JSON.parse(message);
-                    const action = data.action || "download";
+                    const action = data.action || Actions.DOWNLOAD_START;
 
                     if (!this.actions[action]) {
                         socket.error("Ação não reconhecida.");
