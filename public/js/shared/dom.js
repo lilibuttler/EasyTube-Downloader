@@ -50,6 +50,8 @@ window.DOM = {
 
     openFolderAfterDownload: document.getElementById("openFolderAfterDownload"),
 
-    saveSettingsBtn: document.getElementById("saveSettingsBtn")
+    saveSettingsBtn: document.getElementById("saveSettingsBtn"),
+
+    cookiesBrowser: document.getElementById("cookiesBrowser")
 
 };

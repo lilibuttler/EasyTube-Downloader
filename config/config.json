@@ -1,5 +1,7 @@
 {
     "downloadFolder": "videos",
     "format": "mp4",
-    "quality": "best"
+    "quality": "best",
+    "openFolderAfterDownload": true,
+    "cookiesBrowser": "edge"
 }

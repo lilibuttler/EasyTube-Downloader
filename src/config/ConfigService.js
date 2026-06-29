@@ -7,7 +7,8 @@ const DEFAULT_CONFIG = {
     downloadFolder: "videos",
     format: "mp4",
     videoQuality: "best",
-    openFolderAfterDownload: true
+    openFolderAfterDownload: true,
+    cookiesBrowser: "edge"
 };
 
 const CONFIG_FILE = path.join(Paths.CONFIG, "config.json");

@@ -64,5 +64,7 @@ window.Settings = {
 
         DOM.openFolderAfterDownload.checked =
             settings.openFolderAfterDownload === true;
+
+        DOM.cookiesBrowser.value = settings.cookiesBrowser || "edge";
     }
 };
